@@ -41,7 +41,7 @@ def get_vocabulary(df, length=3000):
     length - the number of the most frequent words to create a vocabulary, other - ignore.
     """
     docs = df.text.values
-    vec = CountVectorizer(max_features=length)
+    vec = CountVectorizer(max_features=length, ngram_range=(2,2))
     vec.fit_transform(docs)
     return vec.vocabulary_
 
