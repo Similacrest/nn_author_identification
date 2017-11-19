@@ -47,13 +47,13 @@ def get_vocabulary(df, length=3000):
 
 
 # Text to matrix, return list
-def vectorize_sentence(sentenses,  vocabulary):
+def vectorize_sentence(sentences,  vocabulary):
     """
     Using Bi-gram models
     sentenses - list of lists
     """
     vectorizer = CountVectorizer(vocabulary=vocabulary, ngram_range=(2,2))
-    sentence_transform = vectorizer.fit_transform(sentenses)
+    sentence_transform = vectorizer.fit_transform(sentences)
     return sentence_transform.toarray()
 
 
