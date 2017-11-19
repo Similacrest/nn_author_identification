@@ -35,8 +35,11 @@ def lemmatize_text(text, stem=False):
         normal_txt = [lemmanizer.lemmatize(w) for w in text]
     return " ".join(normal_txt)
 
-
+# From all the text create vocabuluary
 def get_vocabulary(df, length=3000):
+    """
+    length - the number of the most frequent words to create a vocabulary, other - ignore.
+    """
     docs = df.text.values
     vec = CountVectorizer(max_features=length)
     vec.fit_transform(docs)
@@ -44,10 +47,13 @@ def get_vocabulary(df, length=3000):
 
 
 # Text to matrix, return list
-def vectorize_sentence(sentence,  vocabulary):
-    # Using Bi-gram models
+def vectorize_sentence(sentenses,  vocabulary):
+    """
+    Using Bi-gram models
+    sentenses - list of lists
+    """
     vectorizer = CountVectorizer(vocabulary=vocabulary, ngram_range=(2,2))
-    sentence_transform = vectorizer.fit_transform(sentence)
+    sentence_transform = vectorizer.fit_transform(sentences)
     return sentence_transform.toarray()
 
 
