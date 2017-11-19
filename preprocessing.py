@@ -61,7 +61,7 @@ if __name__ == "__main__":
     train_df = create_df("train.csv")
 
     train_df.text = train_df.text.apply(clean_text)
-    train_df.txt = train_df.text.apply(lambda row: lemmatize_text(row))
+    train_df.text = train_df.text.apply(lambda row: lemmatize_text(row))
 
     vocab = get_vocabulary(train_df)
 
