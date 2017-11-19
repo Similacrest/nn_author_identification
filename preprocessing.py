@@ -53,7 +53,7 @@ def vectorize_sentence(sentenses,  vocabulary):
     sentenses - list of lists
     """
     vectorizer = CountVectorizer(vocabulary=vocabulary, ngram_range=(2,2))
-    sentence_transform = vectorizer.fit_transform(sentences)
+    sentence_transform = vectorizer.fit_transform(sentenses)
     return sentence_transform.toarray()
 
 
