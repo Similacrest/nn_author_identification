@@ -1,5 +1,6 @@
 import nltk
 import pandas as pd
+import operator
 import numpy as np
 import string
 from sklearn.feature_extraction.text import CountVectorizer
@@ -35,42 +36,44 @@ def lemmatize_text(text, stem=False):
         normal_txt = [lemmanizer.lemmatize(w) for w in text]
     return " ".join(normal_txt)
 
-# From all the text create vocabuluary
-def get_vocabulary(df, length=3000):
+
+def get_vocabulary(df, length=3000, ngram_range=None):
     """
-    length - the number of the most frequent words to create a vocabulary, other - ignore.
+    :param length: total length of the vocabulary, least frequent words ignored
+    :param ngram_range: tuple; if true - use ngram models, specified by this tuple example: (2, 2) - BiGram model
+    :return: dict word:frequency
     """
     docs = df.text.values
     vec = CountVectorizer(max_features=length)
-    vec.fit_transform(docs)
-    return vec.vocabulary_
+    if ngram_range:
+        vec.ngram_range = ngram_range
+    transformation = vec.fit_transform(docs)
+    freq = np.ravel(transformation.sum(axis=0))
+
+    vocab = dict(zip(vec.get_feature_names(), freq))
+    return vocab
+
+
+# Mapping for embeddings
+def embedding_mapping(vocab):
+    """
+    :return: dict word: rank, where rank 2 means the most frequent word, rank 3 - less frequent and so on
+             0, and 1 will be used for padding and unknown words (not in vocab)
+    """
+    sorted_vocab = sorted(vocab.items(), key=operator.itemgetter(1), reverse=True)
+    sorted_words = [w for (w, f) in sorted_vocab]
+    emb_map = {word: rank + 2 for rank, word in enumerate(sorted_words)}
+    emb_map["PAD"] = 0
+    emb_map["UNKNOWN"] = 1
+    return emb_map
 
 
 # Text to matrix, return list
-def vectorize_sentence(sentenses,  vocabulary):
-    """
-    Using Bi-gram models
-    sentenses - list of lists
-    """
-    vectorizer = CountVectorizer(vocabulary=vocabulary, ngram_range=(2,2))
-    sentence_transform = vectorizer.fit_transform(sentences)
+def vectorize_sentence(sentence,  vocabulary, ngram_range=None):
+    vectorizer = CountVectorizer(vocabulary=vocabulary)
+
+    if ngram_range:
+        vectorizer.ngram_range = ngram_range
+
+    sentence_transform = vectorizer.fit_transform(sentence)
     return sentence_transform.toarray()
-
-
-if __name__ == "__main__":
-    train_df = create_df("train.csv")
-
-    train_df.text = train_df.text.apply(clean_text)
-    train_df.txt = train_df.text.apply(lambda row: lemmatize_text(row))
-
-    vocab = get_vocabulary(train_df)
-
-    example = train_df.text.values[0:2]
-
-    vectorized = vectorize_sentence(example, vocab)
-    print(vectorized.shape)
-
-
-
-
-
