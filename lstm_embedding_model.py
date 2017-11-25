@@ -53,6 +53,8 @@ if __name__ == "__main__":
     vocab_size = 5000
     vocab = get_vocabulary(train_df, length=vocab_size)
     emb_vocab = embedding_mapping(vocab)
+    emb_vocab_size = len(emb_vocab)
+
 
     X_train, X_test, y_train, y_test = split_data(train_df, 0.8)
     embed_size = 64
@@ -66,10 +68,8 @@ if __name__ == "__main__":
     lstm_size = 50
     batch_size = 64
 
-    print(X_train[0])
-    print(y_train[0])
 
-    model = baseline_model(vocab_size, embed_size, lstm_size)
+    model = baseline_model(emb_vocab_size, embed_size, lstm_size)
     model.fit(X_train, y_train, batch_size=batch_size, epochs=num_epochs)
 
     scores = model.evaluate(X_test, y_test)
