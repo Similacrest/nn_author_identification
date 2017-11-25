@@ -82,6 +82,19 @@ def vectorize_sentence(sentence,  vocabulary, ngram_range=None):
     return sentence_transform.toarray()
 
 
+def sentence_to_emb(sentence, vocab, maxlen):
+    sentence = sentence.split()
+
+    if len(sentence) > maxlen:
+        sentence = sentence[-maxlen:]
+        out = []
+    else:
+        dif = maxlen - len(sentence)
+        out = [0] * dif
+    for word in sentence:
+        out.append(vocab.get(word, 1))
+    return np.array(out)
+
 if __name__ == "__main__":
     train_df = create_df("train.csv")
 
