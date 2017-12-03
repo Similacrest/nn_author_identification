@@ -5,6 +5,7 @@ import numpy as np
 import string
 from keras.utils.np_utils import to_categorical
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 
 
 # Read csv file and return Pandas DataFrame
