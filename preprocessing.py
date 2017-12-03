@@ -22,17 +22,6 @@ def clean_text(text):
     pure_txt = [w for w in text_without_stopwords if w not in string.punctuation]
     return " ".join(pure_txt)
 
-def encode_authors(labels):
-    """
-
-    :param labels: np.array or list of string authors
-    :return: categorical list (for keras)
-    """
-    authors_vocab = {"EAP": 0, "HPL": 1, "MWS": 2}
-    y = [authors_vocab[label] for label in labels]
-    y = to_categorical(y, num_classes=3)
-    return y
-
 
 # Convert word to its normal form
 def lemmatize_text(text, stem=False):
@@ -81,6 +70,24 @@ def embedding_mapping(vocab):
     emb_map["PAD"] = 0
     emb_map["UNKNOWN"] = 1
     return emb_map
+
+# Encode sentence to numbers using Word Embeddings
+def encode_texts(text, embedding_vocab, embedding_size):
+    emb_func = lambda sent: sentence_to_emb(sent, embedding_vocab, embedding_size)
+    emb_texts = np.array([emb_func(sent) for sent in text])
+    return emb_texts
+
+
+def encode_authors(labels):
+    """
+
+    :param labels: np.array or list of string authors
+    :return: categorical list (for keras)
+    """
+    authors_vocab = {"EAP": 0, "HPL": 1, "MWS": 2}
+    y = [authors_vocab[label] for label in labels]
+    y = to_categorical(y, num_classes=3)
+    return y
 
 
 # Text to matrix, return list
