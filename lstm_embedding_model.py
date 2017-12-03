@@ -14,34 +14,6 @@ def baseline_model(vocab_size, embed_length, lstm_size):
     return model
 
 
-def split_data(df, ratio, state=1):
-    """
-    :param ratio: test fraction
-    :param state: random_state
-    :return:
-    """
-    X = df.text.values
-    y = df.author.values
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=ratio, random_state=state)
-    return X_train, X_test, y_train, y_test
-
-
-def encode_authors(labels):
-    """
-    :param labels: np.array or list of string authors
-    :return: categorical list (for keras)
-    """
-    authors_vocab = {"EAP": 0, "HPL": 1, "MWS": 2}
-    y = [authors_vocab[label] for label in labels]
-    y = to_categorical(y, num_classes=3)
-    return y
-
-
-def encode_texts(text, embedding_vocab, embedding_size):
-    emb_func = lambda sent: sentence_to_emb(sent, embedding_vocab, embedding_size)
-    emb_texts = np.array([emb_func(sent) for sent in text])
-    return emb_texts
-
 if __name__ == "__main__":
 
     train_df = create_df("train.csv")
