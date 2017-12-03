@@ -71,6 +71,7 @@ def embedding_mapping(vocab):
     emb_map["UNKNOWN"] = 1
     return emb_map
 
+
 # Encode sentence to numbers using Word Embeddings
 def encode_texts(text, embedding_vocab, embedding_size):
     emb_func = lambda sent: sentence_to_emb(sent, embedding_vocab, embedding_size)
@@ -88,6 +89,19 @@ def encode_authors(labels):
     y = [authors_vocab[label] for label in labels]
     y = to_categorical(y, num_classes=3)
     return y
+
+
+def split_data(df, ratio, state=1):
+    """
+
+    :param ratio: test fraction
+    :param state: random_state
+    :return:
+    """
+    X = df.text.values
+    y = df.author.values
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=ratio, random_state=state)
+    return X_train, X_test, y_train, y_test
 
 
 # Text to matrix, return list
