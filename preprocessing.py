@@ -3,6 +3,7 @@ import pandas as pd
 import operator
 import numpy as np
 import string
+from keras.utils.np_utils import to_categorical
 from sklearn.feature_extraction.text import CountVectorizer
 
 
@@ -20,6 +21,17 @@ def clean_text(text):
     text_without_stopwords = [w for w in tokenize_text if w not in stopwords]
     pure_txt = [w for w in text_without_stopwords if w not in string.punctuation]
     return " ".join(pure_txt)
+
+def encode_authors(labels):
+    """
+
+    :param labels: np.array or list of string authors
+    :return: categorical list (for keras)
+    """
+    authors_vocab = {"EAP": 0, "HPL": 1, "MWS": 2}
+    y = [authors_vocab[label] for label in labels]
+    y = to_categorical(y, num_classes=3)
+    return y
 
 
 # Convert word to its normal form
